@@ -1,0 +1,156 @@
+﻿<Page
+    x:Class="CoPilot.Desktop.View.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CoPilot.Desktop.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- APP RESOURCES -->
+    <Page.Resources>
+        <Flyout x:Name="SearchFlyout" x:Key="SearchFlayoutItem">
+            <Grid Width="200">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Margin="0,0,0,15" Style="{StaticResource TitleTextBlockStyle}" Text="Find on screen" x:Uid="Find_Dialog" Grid.Row="0" Grid.ColumnSpan="2" />
+                <SearchBox Grid.Row="1" QueryChanged="Search_QueryChanged" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
+                <Button x:Uid="Previous" IsEnabled="{Binding IsSearch}" Click="Previous_Click" Content="Previous" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <Button x:Uid="Next" IsEnabled="{Binding IsSearch}" Click="Next_Click" Content="Next" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Grid>
+        </Flyout>
+        <Flyout x:Name="LinkFlyout" x:Key="LinkFlayoutItem">
+            <Grid Width="200">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Margin="0,0,0,15" Style="{StaticResource TitleTextBlockStyle}" Text="Change CoPilot adress" x:Uid="Edit_Dialog_Title" Grid.Row="0" Grid.ColumnSpan="2" />
+                <TextBlock Margin="0,0,0,15" Style="{StaticResource BaseTextBlockStyle}" x:Uid="Edit_Dialog" Grid.Row="1" Grid.ColumnSpan="2" />
+                <Button x:Uid="Yes" Click="LinkYes_Click" Content="Yes" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <Button x:Uid="No" Click="LinkNo_Click" Content="No" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Grid>
+        </Flyout>
+    </Page.Resources>
+
+    <!-- APP CONTENT -->
+    <Grid Background="{StaticResource CoPilotColor}">
+        <!-- STATES -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="DefaultLayout">
+                    <!-- The default Visibility properties are set in the XAML that defines the objects. -->
+                </VisualState>
+                <VisualState x:Name="MinimalLayout">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Big" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Small" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <!-- Web -->
+        <WebView x:Name="Browser" Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConvertor}}" />
+        <!-- Loader -->
+        <ProgressRing Foreground="White" Width="100" Height="100" Visibility="{Binding IsNavigation, Converter={StaticResource BooleanToVisibilityConvertor}}" IsActive="True" />
+        <!-- Enter URL -->
+        <Grid Visibility="{Binding IsInput, Converter={StaticResource BooleanToVisibilityConvertor}}" >
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Image Grid.Row="0" Source="ms-appx:///Assets/wide-logo.png" Stretch="None" />
+            </Grid>
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Width="500" Margin="30,200,30,0">
+                <TextBlock Grid.Row="1" Text="Test" x:Uid="Info" TextAlignment="Justify" Style="{StaticResource BaseTextBlockStyle}" />
+            </Grid>
+        </Grid>
+    </Grid>
+    <!-- APP BAR-->
+    <Page.BottomAppBar>
+        <AppBar IsSticky="{Binding IsInput}">
+            <Grid>
+                <Grid x:Name="Big" Visibility="Visible">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- BUTTONS -->
+                    <AppBarButton IsCompact="True" x:Uid="Back" HorizontalAlignment="Center" Icon="Back" Click="Back_Click" IsEnabled="{Binding WebView.CanGoBack}" Grid.Column="0"/>
+                    <AppBarButton IsCompact="True" x:Uid="Link" HorizontalAlignment="Center" Icon="Link" IsEnabled="{Binding IsLoaded}" Grid.Column="3" Flyout="{StaticResource LinkFlayoutItem}"/>
+                    <AppBarButton IsCompact="True" x:Uid="Refresh" HorizontalAlignment="Center" Icon="Refresh" Click="Resfresh_Click" IsEnabled="{Binding IsLoaded}" Grid.Column="4"/>
+                    <AppBarButton IsCompact="True" x:Uid="Home" HorizontalAlignment="Center" Icon="Home" Click="Home_Click" IsEnabled="{Binding IsLoaded}" Grid.Column="6"/>
+                    <AppBarButton IsCompact="True" x:Uid="Find" HorizontalAlignment="Center" Icon="Find" IsEnabled="{Binding IsLoaded}" Grid.Column="5" Flyout="{StaticResource SearchFlayoutItem}"/>
+                    <!-- IP -->
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox IsEnabled="false" Grid.Column="0" Text="http://" VerticalAlignment="Center" Margin="0,5" FontSize="28" Height="50" VerticalContentAlignment="Center" BorderThickness="2,2,0,2" />
+                        <TextBox IsEnabled="{Binding IsInput}" Grid.Column="1" Text="{Binding LastAdress}" VerticalAlignment="Center" Margin="0" FontSize="28" Height="50" VerticalContentAlignment="Center" KeyDown="AdressInput_KeyDown" LostFocus="AdressInput_LostFocus" BorderThickness="0,2,0,2" BorderBrush="Gray" />
+                        <TextBox IsEnabled="false" Grid.Column="2" Text="/copilot/" VerticalAlignment="Center" Margin="0,5" FontSize="28" Height="50" VerticalContentAlignment="Center" BorderThickness="0,2,2,2" />
+                    </Grid>
+                </Grid>
+                <Grid x:Name="Small" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <!-- BUTTONS -->
+                    <AppBarButton IsCompact="True" x:Uid="Back" HorizontalAlignment="Center" Icon="Back" Click="Back_Click" IsEnabled="{Binding WebView.CanGoBack}" Grid.Column="0" Grid.Row="1"/>
+                    <AppBarButton IsCompact="True" x:Uid="Link" HorizontalAlignment="Center" Icon="Link" IsEnabled="{Binding IsLoaded}" Grid.Column="3" Flyout="{StaticResource LinkFlayoutItem}"  Grid.Row="1"/>
+                    <AppBarButton IsCompact="True" x:Uid="Refresh" HorizontalAlignment="Center" Icon="Refresh" Click="Resfresh_Click" IsEnabled="{Binding IsLoaded}" Grid.Column="4"   Grid.Row="1"/>
+                    <AppBarButton IsCompact="True" x:Uid="Home" HorizontalAlignment="Center" Icon="Home" Click="Home_Click" IsEnabled="{Binding IsLoaded}" Grid.Column="6" Grid.Row="1"/>
+                    <AppBarButton IsCompact="True" x:Uid="Find" HorizontalAlignment="Center" Icon="Find" IsEnabled="{Binding IsLoaded}" Grid.Column="5" Flyout="{StaticResource SearchFlayoutItem}" Grid.Row="1"/>
+                    <!-- IP -->
+                    <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="7" Margin="10,0,10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox IsEnabled="false" Grid.Column="0" Text="http://" VerticalAlignment="Center" Margin="0,5" FontSize="28" Height="50" VerticalContentAlignment="Center" BorderThickness="2,2,0,2" />
+                        <TextBox IsEnabled="{Binding IsInput}" Grid.Column="1" Text="{Binding LastAdress}" VerticalAlignment="Center" Margin="0" FontSize="28" Height="50" VerticalContentAlignment="Center" KeyDown="AdressInput_KeyDown" LostFocus="AdressInput_LostFocus" BorderThickness="0,2,0,2" BorderBrush="Gray" />
+                        <TextBox IsEnabled="false" Grid.Column="2" Text="/copilot/" VerticalAlignment="Center" Margin="0,5" FontSize="28" Height="50" VerticalContentAlignment="Center" BorderThickness="0,2,2,2" />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </AppBar>
+    </Page.BottomAppBar>
+
+</Page>

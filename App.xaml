@@ -1,0 +1,18 @@
+﻿<Application
+    x:Class="CoPilot.Desktop.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:convertors="using:CoPilot.Desktop.Data.Convertors" 
+    xmlns:local="using:CoPilot.Desktop">
+
+    <!--Application Resources-->
+    <Application.Resources>
+        <ResourceDictionary>
+            <convertors:BooleanToVisibility x:Key="BooleanToVisibilityConvertor" />
+            <convertors:BooleanToCollapsed x:Key="BooleanToCollapsedConvertor" />
+            <convertors:TrueToFalse x:Key="TrueToFalseConvertor" />
+            <SolidColorBrush Color="#FF647687" x:Key="CoPilotColor" />
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>
