@@ -76,6 +76,24 @@ namespace CoPilot.Desktop.View
             }
         }
 
+
+        /// <summary>
+        /// Is internet
+        /// </summary>
+        private Boolean isInternet = false;
+        public Boolean IsInternet
+        {
+            get
+            {
+                return isInternet;
+            }
+            set
+            {
+                isInternet = value;
+                RaisePropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Is navigating
         /// </summary>
@@ -310,9 +328,11 @@ namespace CoPilot.Desktop.View
                 //clear
                 this.IsNavigation = false;
                 //found
-                this.IsInput = !e.IsSuccess;
+                this.IsInput = this.scanner.IsNetwork && !e.IsSuccess;
                 //loaded
                 this.IsLoaded = e.IsSuccess;
+                //internet
+                this.IsInternet = this.IsLoaded || this.scanner.IsNetwork;
                 //appbar is is input
                 if (this.IsInput) 
                 {
@@ -333,11 +353,15 @@ namespace CoPilot.Desktop.View
             {
                 var s = sender as NetworkScan;
                 //found
-                this.IsInput = !s.IsNetwork || s.LastAdress == null;
+                this.IsInput = s.IsNetwork && s.LastAdress == null;
+                this.IsInternet = s.IsNetwork;
                 this.BottomAppBar.IsOpen = this.IsInput;
                 //loading
                 this.loadeFromUrl();
             };
+
+            //scan
+            this.scanner.Scan();
         }
 
         /// <summary>
@@ -354,6 +378,7 @@ namespace CoPilot.Desktop.View
                 {
                     //set
                     this.IsNavigation = true;
+                    this.IsInternet = true;
                     //navigate
                     this.Browser.Navigate(new Uri(url));
                 }

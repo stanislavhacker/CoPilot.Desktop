@@ -147,6 +147,9 @@
   <data name="No.Content" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="NoInternet.Text" xml:space="preserve">
+    <value>You are not connected to the Internet. For the first connection to the application CoPilot is necessary to have the device connected to the Internet.</value>
+  </data>
   <data name="Previous.Content" xml:space="preserve">
     <value>Previous</value>
   </data>

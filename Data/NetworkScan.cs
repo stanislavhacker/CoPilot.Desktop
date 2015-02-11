@@ -26,7 +26,7 @@ namespace CoPilot.Desktop.Data
         /// <summary>
         /// Is Network
         /// </summary>
-        private Boolean isNetwork = false;
+        private Boolean isNetwork;
         public Boolean IsNetwork
         {
             get
@@ -35,10 +35,6 @@ namespace CoPilot.Desktop.Data
             }
             set
             {
-                if (isNetwork == value)
-                {
-                    return;
-                }
                 isNetwork = value;
                 RaisePropertyChanged();
             }
@@ -70,8 +66,6 @@ namespace CoPilot.Desktop.Data
 
         public NetworkScan()
         {
-            //scaner prepare
-            this.prepareScaner();
             //status change
             NetworkInformation.NetworkStatusChanged += statusChange;
         }
@@ -79,7 +73,7 @@ namespace CoPilot.Desktop.Data
         /// <summary>
         /// Prepare scaner
         /// </summary>
-        private void prepareScaner()
+        public void Scan()
         {
             //resolve profile
             this.IsNetwork = this.getIsNetwork();
@@ -132,7 +126,7 @@ namespace CoPilot.Desktop.Data
         /// <param name="sender"></param>
         private void statusChange(object sender)
         {
-            this.prepareScaner();
+            this.Scan();
         }
 
         #region PROPERTY CHANGE
@@ -145,7 +139,7 @@ namespace CoPilot.Desktop.Data
         /// <param name="name"></param>
         public async void OnPropertyChanged(string name)
         {
-            await Window.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 PropertyChangedEventHandler handler = PropertyChanged;
                 if (handler != null)
@@ -161,7 +155,7 @@ namespace CoPilot.Desktop.Data
         /// <param name="caller"></param>
         public async void RaisePropertyChanged([CallerMemberName] string caller = "")
         {
-            await Window.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 PropertyChangedEventHandler handler = PropertyChanged;
                 if (handler != null)

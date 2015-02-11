@@ -147,6 +147,9 @@
   <data name="No.Content" xml:space="preserve">
     <value>Ne</value>
   </data>
+  <data name="NoInternet.Text" xml:space="preserve">
+    <value>Nejste připojeni k internetu. Pro první připojení k aplikaci CoPilot je potřeba mít zařízení přopojené k internetu.</value>
+  </data>
   <data name="Previous.Content" xml:space="preserve">
     <value>Předchozí</value>
   </data>
